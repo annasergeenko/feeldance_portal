@@ -321,10 +321,14 @@ async function loadLessonDates(names) {
       ? `{Student}="${names[0].replace(/"/g,'\"')}"`
       : `OR(${nameChecks})`;
 
-    const filterWithDate = `AND(${formula}, {Status}!="Cancelled")`;
+    // Search by lookup field which includes duo lessons
+    const nameChecksLookup = names.map(n => `FIND("${n.replace(/"/g,'\"')}", ARRAYJOIN({Student (from Student)}, ","))`).join(',');
+    const lessonFormula = names.length === 1
+      ? `AND(FIND("${names[0].replace(/"/g,'\"')}", ARRAYJOIN({Student (from Student)}, ",")), {Status}!="Cancelled")`
+      : `AND(OR(${nameChecksLookup}), {Status}!="Cancelled")`;
 
     const data = await api(T_LESSONS, {
-      filterByFormula: filterWithDate,
+      filterByFormula: lessonFormula,
       fields: ['Date of the lesson', 'Student (from Student)', 'Teacher', 'Status'],
       maxRecords: 20
     });
