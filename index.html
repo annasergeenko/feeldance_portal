@@ -321,13 +321,12 @@ async function loadLessonDates(names) {
       ? `{Student}="${names[0].replace(/"/g,'\"')}"`
       : `OR(${nameChecks})`;
 
-    const today = new Date().toISOString().split('T')[0];
-    const filterWithDate = `AND(${formula}, IS_BEFORE({Date of the lesson}, "${today}"), {Status}!="Cancelled")`;
+    const filterWithDate = `AND(${formula}, {Status}!="Cancelled")`;
 
     const data = await api(T_LESSONS, {
       filterByFormula: filterWithDate,
       fields: ['Date of the lesson', 'Student (from Student)', 'Teacher', 'Status'],
-      maxRecords: 10
+      maxRecords: 20
     });
 
     const lessons = data.records || [];
