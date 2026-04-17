@@ -1,910 +1,426 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Feel Dance Team — My Account</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-
 <style>
-  :root {
-    --cream: #F5F0E8;
-    --ink: #1A1714;
-    --gold: #C8A86B;
-    --gold-light: #E8D5A8;
-    --rose: #C4707A;
-    --muted: #8A8178;
-    --card-bg: #FDFAF5;
-    --border: rgba(200, 168, 107, 0.25);
-  }
+:root {
+  --cream: #F5F0E8; --ink: #1A1714; --gold: #C8A86B;
+  --gold-light: #E8D5A8; --rose: #C4707A; --muted: #8A8178;
+  --card: #FDFAF5; --border: rgba(200,168,107,0.25);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--cream); color: var(--ink); font-family: 'DM Sans', sans-serif; min-height: 100vh; font-size: 15px; }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+header { padding: 24px 32px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: var(--cream); z-index: 10; }
+.logo { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; letter-spacing: .04em; }
+.logo span { color: var(--gold); }
+#logoutBtn { display: none; background: none; border: 1px solid var(--border); color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 13px; padding: 7px 16px; border-radius: 20px; cursor: pointer; }
+#logoutBtn:hover { border-color: var(--gold); color: var(--ink); }
 
-  body {
-    background: var(--cream);
-    color: var(--ink);
-    font-family: 'DM Sans', sans-serif;
-    min-height: 100vh;
-    font-size: 15px;
-  }
+main { max-width: 680px; margin: 0 auto; padding: 40px 24px 80px; }
 
-  /* ── HEADER ── */
-  header {
-    padding: 28px 32px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 1px solid var(--border);
-    background: var(--cream);
-    position: sticky;
-    top: 0;
-    z-index: 10;
-  }
+/* LOGIN */
+#login { display: flex; flex-direction: column; align-items: center; padding-top: 60px; }
+.eyebrow { font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; }
+.big-title { font-family: 'Cormorant Garamond', serif; font-size: 44px; font-weight: 300; line-height: 1.1; text-align: center; margin-bottom: 8px; }
+.big-title em { font-style: italic; color: var(--gold); }
+.sub { color: var(--muted); font-size: 14px; margin-bottom: 44px; }
+.form { width: 100%; max-width: 380px; display: flex; flex-direction: column; gap: 12px; }
+label { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 6px; }
+input[type=email] { width: 100%; padding: 14px 18px; border: 1px solid var(--border); border-radius: 10px; background: var(--card); font-family: 'DM Sans', sans-serif; font-size: 15px; color: var(--ink); outline: none; transition: border-color .2s; }
+input[type=email]:focus { border-color: var(--gold); }
+.btn { width: 100%; padding: 15px; background: var(--ink); color: var(--cream); border: none; border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500; cursor: pointer; transition: background .2s; }
+.btn:hover { background: #2e2a26; }
+.btn:disabled { background: #b0a89e; cursor: not-allowed; }
+.err { color: var(--rose); font-size: 13px; text-align: center; min-height: 18px; }
 
-  .logo {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 22px;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    color: var(--ink);
-  }
-  .logo span { color: var(--gold); }
+/* DASHBOARD */
+#dash { display: none; }
+.greeting { margin-bottom: 32px; }
+.greeting-name { font-family: 'Cormorant Garamond', serif; font-size: 38px; font-weight: 300; }
+.greeting-name strong { font-weight: 600; }
+.section-label { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); padding-bottom: 10px; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
 
-  .logout-btn {
-    background: none;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    padding: 7px 16px;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: none;
-  }
-  .logout-btn:hover { border-color: var(--gold); color: var(--ink); }
+/* PACKAGE CARD */
+.pkg-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 24px 26px; margin-bottom: 14px; position: relative; overflow: hidden; }
+.pkg-card.active { border-color: var(--gold); }
+.pkg-card.active::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--gold), var(--gold-light)); }
+.pkg-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; gap: 10px; }
+.pkg-name { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 600; }
+.badge { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; padding: 4px 11px; border-radius: 20px; white-space: nowrap; flex-shrink: 0; }
+.badge-active { background: #E8F5E2; color: #4A7C3F; }
+.badge-low { background: #FDF0E8; color: #C4704A; }
+.badge-done { background: #F0EDE8; color: var(--muted); }
+.big-num { font-family: 'Cormorant Garamond', serif; font-size: 52px; font-weight: 300; line-height: 1; }
+.big-num span { font-family: 'DM Sans', sans-serif; font-size: 15px; color: var(--muted); font-weight: 300; }
+.progress-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
+.of-total { font-size: 13px; color: var(--muted); }
+.bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--gold), var(--gold-light)); }
+.bar-fill.low { background: linear-gradient(90deg, var(--rose), #E8A0A6); }
+.meta-row { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 16px; }
+.meta-item .ml { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+.meta-item .mv { font-size: 14px; font-weight: 500; }
 
-  /* ── MAIN ── */
-  main {
-    max-width: 680px;
-    margin: 0 auto;
-    padding: 40px 24px 80px;
-  }
+/* STUDENT HEADER */
+.student-header { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; margin: 24px 0 12px; color: var(--ink); }
 
-  /* ── LOGIN ── */
-  #login-screen {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-top: 60px;
-    animation: fadeIn 0.5s ease;
-  }
+/* LESSONS */
+.lesson-row { display: flex; align-items: center; gap: 14px; padding: 11px 14px; background: var(--card); border-radius: 10px; margin-bottom: 2px; }
+.lesson-date { flex-shrink: 0; width: 90px; }
+.lesson-date .d { font-size: 14px; font-weight: 500; }
+.lesson-date .wd { font-size: 12px; color: var(--muted); }
+.dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.dot-done { background: var(--gold); }
+.dot-cancel { background: #ddd; }
+.dot-upcoming { background: var(--rose); }
+.lesson-info { flex: 1; }
+.lesson-info .lt { font-size: 14px; }
+.lesson-info .tc { font-size: 12px; color: var(--muted); }
+.chip { font-size: 11px; padding: 3px 10px; border-radius: 12px; white-space: nowrap; }
+.chip-done { background: #E8F5E2; color: #4A7C3F; }
+.chip-cancel { background: #F0EDE8; color: var(--muted); }
+.chip-upcoming { background: #FDF0E8; color: #C4704A; }
 
-  .login-eyebrow {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 11px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--gold);
-    margin-bottom: 16px;
-  }
+/* CONTACT */
+.contact { background: var(--ink); color: var(--cream); border-radius: 16px; padding: 24px 26px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-top: 32px; }
+.contact .cl { font-size: 13px; color: rgba(245,240,232,.5); margin-bottom: 4px; }
+.contact .cn { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 600; }
+.contact a { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background: var(--gold); color: var(--ink); border-radius: 8px; text-decoration: none; font-size: 13px; font-weight: 500; }
 
-  .login-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 42px;
-    font-weight: 300;
-    line-height: 1.15;
-    text-align: center;
-    color: var(--ink);
-    margin-bottom: 8px;
-  }
-  .login-title em { font-style: italic; color: var(--gold); }
+.spinner { width: 28px; height: 28px; border: 2px solid var(--border); border-top-color: var(--gold); border-radius: 50%; animation: spin .7s linear infinite; margin: 32px auto; }
+.empty { text-align: center; padding: 32px; color: var(--muted); }
 
-  .login-sub {
-    color: var(--muted);
-    font-size: 14px;
-    margin-bottom: 48px;
-    text-align: center;
-  }
-
-  .login-form {
-    width: 100%;
-    max-width: 380px;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-  }
-
-  .field-label {
-    font-size: 11px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 6px;
-    display: block;
-  }
-
-  input[type="email"], input[type="text"] {
-    width: 100%;
-    padding: 14px 18px;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    background: var(--card-bg);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 15px;
-    color: var(--ink);
-    outline: none;
-    transition: border-color 0.2s;
-  }
-  input:focus { border-color: var(--gold); }
-
-  .submit-btn {
-    width: 100%;
-    padding: 16px;
-    background: var(--ink);
-    color: var(--cream);
-    border: none;
-    border-radius: 10px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 15px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background 0.2s, transform 0.1s;
-    margin-top: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-  }
-  .submit-btn:hover { background: #2e2a26; }
-  .submit-btn:active { transform: scale(0.99); }
-  .submit-btn:disabled { background: #b0a89e; cursor: not-allowed; }
-
-  .error-msg {
-    color: var(--rose);
-    font-size: 13px;
-    text-align: center;
-    min-height: 18px;
-    margin-top: 4px;
-  }
-
-  /* ── DASHBOARD ── */
-  #dashboard-screen {
-    display: none;
-    animation: fadeIn 0.5s ease;
-  }
-
-  .greeting {
-    margin-bottom: 36px;
-  }
-  .greeting-eyebrow {
-    font-size: 11px;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--gold);
-    margin-bottom: 8px;
-  }
-  .greeting-name {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 38px;
-    font-weight: 300;
-    color: var(--ink);
-    line-height: 1.1;
-  }
-  .greeting-name strong { font-weight: 600; }
-
-  /* ── SECTION ── */
-  .section-title {
-    font-size: 11px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 14px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  /* ── PACKAGE CARD ── */
-  .packages-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    margin-bottom: 36px;
-  }
-
-  .pkg-card {
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 24px 26px;
-    position: relative;
-    overflow: hidden;
-    transition: box-shadow 0.2s;
-  }
-  .pkg-card:hover { box-shadow: 0 4px 24px rgba(0,0,0,0.06); }
-
-  .pkg-card.active { border-color: var(--gold); }
-
-  .pkg-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, var(--gold), var(--gold-light));
-    opacity: 0;
-    transition: opacity 0.2s;
-  }
-  .pkg-card.active::before { opacity: 1; }
-
-  .pkg-top {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    margin-bottom: 20px;
-    gap: 12px;
-  }
-
-  .pkg-name {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 20px;
-    font-weight: 600;
-    color: var(--ink);
-    line-height: 1.2;
-  }
-
-  .pkg-badge {
-    font-size: 11px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    padding: 4px 11px;
-    border-radius: 20px;
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
-  .badge-active { background: #E8F5E2; color: #4A7C3F; }
-  .badge-inactive { background: #F0EDE8; color: var(--muted); }
-  .badge-low { background: #FDF0E8; color: #C4704A; }
-
-  /* Progress bar */
-  .progress-section { margin-bottom: 18px; }
-
-  .progress-numbers {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    margin-bottom: 8px;
-  }
-
-  .lessons-left-big {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 48px;
-    font-weight: 300;
-    line-height: 1;
-    color: var(--ink);
-  }
-  .lessons-left-big span {
-    font-size: 16px;
-    color: var(--muted);
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 300;
-  }
-
-  .total-label {
-    font-size: 13px;
-    color: var(--muted);
-  }
-
-  .progress-bar {
-    height: 6px;
-    background: var(--border);
-    border-radius: 3px;
-    overflow: hidden;
-  }
-  .progress-fill {
-    height: 100%;
-    border-radius: 3px;
-    background: linear-gradient(90deg, var(--gold), var(--gold-light));
-    transition: width 1s ease;
-  }
-  .progress-fill.low { background: linear-gradient(90deg, var(--rose), #E8A0A6); }
-
-  /* Pkg meta */
-  .pkg-meta {
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
-  }
-  .meta-item { display: flex; flex-direction: column; gap: 2px; }
-  .meta-label { font-size: 11px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
-  .meta-value { font-size: 14px; color: var(--ink); font-weight: 500; }
-
-  /* ── LESSONS LIST ── */
-  .lessons-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1px;
-    margin-bottom: 36px;
-  }
-
-  .lesson-row {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 12px 16px;
-    background: var(--card-bg);
-    border-radius: 10px;
-    transition: background 0.15s;
-  }
-  .lesson-row:hover { background: #F7F2EA; }
-
-  .lesson-date-col {
-    flex-shrink: 0;
-    width: 100px;
-  }
-  .lesson-date {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--ink);
-  }
-  .lesson-weekday {
-    font-size: 12px;
-    color: var(--muted);
-  }
-
-  .lesson-dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-  .dot-done { background: var(--gold); }
-  .dot-cancel { background: #ddd; }
-  .dot-upcoming { background: var(--rose); }
-
-  .lesson-info { flex: 1; }
-  .lesson-type { font-size: 14px; color: var(--ink); }
-  .lesson-teacher { font-size: 12px; color: var(--muted); }
-
-  .lesson-status-chip {
-    font-size: 11px;
-    padding: 3px 10px;
-    border-radius: 12px;
-    white-space: nowrap;
-  }
-  .chip-done { background: #E8F5E2; color: #4A7C3F; }
-  .chip-cancel { background: #F0EDE8; color: var(--muted); }
-  .chip-upcoming { background: #FDF0E8; color: #C4704A; }
-
-  /* ── LOADING ── */
-  .spinner {
-    width: 32px; height: 32px;
-    border: 2px solid var(--border);
-    border-top-color: var(--gold);
-    border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-    margin: 40px auto;
-  }
-
-  .loading-text {
-    text-align: center;
-    color: var(--muted);
-    font-size: 14px;
-    margin-top: 12px;
-  }
-
-  /* ── EMPTY STATE ── */
-  .empty-state {
-    text-align: center;
-    padding: 40px 20px;
-    color: var(--muted);
-  }
-  .empty-icon { font-size: 36px; margin-bottom: 12px; }
-  .empty-text { font-size: 15px; }
-
-  /* ── CONTACT BLOCK ── */
-  .contact-block {
-    background: var(--ink);
-    color: var(--cream);
-    border-radius: 16px;
-    padding: 24px 26px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-  .contact-label {
-    font-size: 13px;
-    color: rgba(245,240,232,0.5);
-    margin-bottom: 4px;
-  }
-  .contact-name {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 20px;
-    font-weight: 600;
-  }
-  .contact-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 20px;
-    background: var(--gold);
-    color: var(--ink);
-    border-radius: 8px;
-    text-decoration: none;
-    font-size: 13px;
-    font-weight: 500;
-    transition: opacity 0.2s;
-    white-space: nowrap;
-  }
-  .contact-link:hover { opacity: 0.85; }
-
-  /* ── ANIMATIONS ── */
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(12px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  @keyframes spin {
-    to { transform: rotate(360deg); }
-  }
-
-  /* ── MOBILE ── */
-  @media (max-width: 520px) {
-    header { padding: 20px 18px; }
-    main { padding: 28px 16px 60px; }
-    .login-title { font-size: 34px; }
-    .lessons-left-big { font-size: 40px; }
-    .pkg-meta { gap: 14px; }
-    .lesson-date-col { width: 82px; }
-  }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+#dash { animation: fadeIn .4s ease; }
 </style>
 </head>
 <body>
-
 <header>
   <div class="logo">Feel <span>Dance</span> Team</div>
-  <button class="logout-btn" id="logoutBtn" onclick="logout()">Sign out</button>
+  <button id="logoutBtn" onclick="logout()">Sign out</button>
 </header>
-
 <main>
   <!-- LOGIN -->
-  <div id="login-screen">
-    <div class="login-eyebrow">My Account</div>
-    <h1 class="login-title">Wel<em>come</em></h1>
-    <p class="login-sub">Enter the email address used at registration</p>
-
-    <div class="login-form">
+  <div id="login">
+    <div class="eyebrow">My Account</div>
+    <h1 class="big-title">Wel<em>come</em></h1>
+    <p class="sub">Enter the email address used at registration</p>
+    <div class="form">
       <div>
-        <label class="field-label" for="emailInput">Email</label>
+        <label for="emailInput">Email</label>
         <input type="email" id="emailInput" placeholder="example@gmail.com"
-               onkeydown="if(event.key==='Enter') doLogin()" />
+               onkeydown="if(event.key==='Enter')doLogin()">
       </div>
-      <button class="submit-btn" id="loginBtn" onclick="doLogin()">
-        <span id="loginBtnText">Sign In</span>
-      </button>
-      <div class="error-msg" id="errorMsg"></div>
+      <button class="btn" id="loginBtn" onclick="doLogin()">Sign In</button>
+      <div class="err" id="errMsg"></div>
     </div>
   </div>
 
   <!-- DASHBOARD -->
-  <div id="dashboard-screen">
+  <div id="dash">
     <div class="greeting">
-      <div class="greeting-eyebrow">My Account</div>
-      <div class="greeting-name" id="greetingName">Hi, <strong></strong></div>
+      <div class="eyebrow">My Account</div>
+      <div class="greeting-name">Hi, <strong id="greetName"></strong></div>
     </div>
-
-    <!-- Packages -->
-    <div class="section-title" id="pkgSectionTitle">Lesson Packages</div>
-    <div class="packages-grid" id="packagesGrid">
-      <div class="spinner"></div>
+    <div class="section-label">Lesson Packages</div>
+    <div id="pkgsWrap"></div>
+    <div id="lessonsWrap" style="display:none">
+      <div class="section-label" style="margin-top:32px">Lesson History</div>
+      <div id="lessonsList"></div>
     </div>
-
-    <!-- Lessons history -->
-    <div id="lessonsSection" style="display:none">
-      <div class="section-title">Lesson History</div>
-      <div class="lessons-list" id="lessonsList"></div>
-    </div>
-
-    <!-- Contact -->
-    <div class="contact-block">
+    <div class="contact">
       <div>
-        <div class="contact-label">Questions about your package?</div>
-        <div class="contact-name">Feel Dance Team</div>
+        <div class="cl">Questions about your package?</div>
+        <div class="cn">Feel Dance Team</div>
       </div>
-      <a href="mailto:billing@feeldance.team" class="contact-link">
-        ✉ Contact us
-      </a>
+      <a href="mailto:billing@feeldance.team">✉ Contact us</a>
     </div>
   </div>
 </main>
 
 <script>
-// ── CONFIG ──────────────────────────────────────────────
-const AIRTABLE_BASE = 'appfL8SfWPrqO7cv0';
-const AIRTABLE_API_KEY = 'patfZW4UH5A7VAnU4.fc66875f8f721c2170139f0df0c3e274b8a6310c25ef70cd1e8b8a1e7ecbd112';
+const BASE = 'appfL8SfWPrqO7cv0';
+const TOKEN = 'patfZW4UH5A7VAnU4.fc66875f8f721c2170139f0df0c3e274b8a6310c25ef70cd1e8b8a1e7ecbd112';
 
-// Table / field IDs from schema
-const TBL_STUDENTS   = 'tblKuHmZSYQRUOEQC';
-const TBL_PACKAGES   = 'tblKSkS8ne6qkAmX7';
-const TBL_LESSONS    = 'tblMP0uBvfrKOhqCg';
+// Table IDs
+const T_STUDENTS = 'tblKuHmZSYQRUOEQC';
+const T_PACKAGES = 'tblKSkS8ne6qkAmX7';
+const T_LESSONS  = 'tblMP0uBvfrKOhqCg';
 
-const FLD_STUDENT_NAME   = 'fldTzI9jzT1YCT0og'; // Student
-const FLD_STUDENT_EMAIL  = 'fldikM98uh0BJwcBu'; // Email
-const FLD_STUDENT_PARENT = 'fldxYddypKkc3HT4E'; // Parent Name
+// Field IDs
+const F = {
+  // Students
+  S_NAME:   'fldTzI9jzT1YCT0og',
+  S_EMAIL:  'fldikM98uh0BJwcBu',
+  S_PARENT: 'fldxYddypKkc3HT4E',
+  // Packages
+  P_STUDENT: 'fldxoXnOsy1tVM5s1',
+  P_LEFT:    'flddm5nEmXhQ6Pbo3',
+  P_TOTAL:   'fld3fxBbFL4dlhY9S',
+  P_CURRENT: 'fldGmtvY2ES9yuwXH',
+  P_ITEM:    'fld4cJh34S9mZLbz0',
+  P_COMMENT: 'fld0sXLEHpZg5pt3E',
+  P_USED:    'fldh0O3XLHtlq7uUl',
+  P_NUM:     'fldpqZhICjegoJKbM',
+  // Lessons
+  L_STUDENT: 'fldWZbAs9kMbjvxd6',
+  L_DATE:    'fldTchzVskoD8qxlH',
+  L_TEACHER: 'fldlYzVOJxHk15xKb',
+  L_STATUS:  'fldEULlUDCGEkFkfc',
+  L_TYPE:    'fldchKXdibelRJv9U',
+};
 
-const FLD_PKG_STUDENT    = 'fldxoXnOsy1tVM5s1'; // Student (link)
-const FLD_PKG_LEFT       = 'flddm5nEmXhQ6Pbo3'; // Lessons left
-const FLD_PKG_TOTAL      = 'fld3fxBbFL4dlhY9S'; // Total lessons
-const FLD_PKG_CURRENT    = 'fldGmtvY2ES9yuwXH'; // Current package
-const FLD_PKG_ITEM       = 'fld4cJh34S9mZLbz0'; // Item (from Prices)
-const FLD_PKG_COMMENT    = 'fld0sXLEHpZg5pt3E'; // Comment
-const FLD_PKG_PAID       = 'fldrq99lseDUEHa6N'; // Paid?
-const FLD_PKG_USED       = 'fldh0O3XLHtlq7uUl'; // Lessons used
-const FLD_PKG_NUM        = 'fldpqZhICjegoJKbM'; // № Package
+let students = [];
 
-const FLD_LES_DATE       = 'fldTchzVskoD8qxlH'; // Date of the lesson
-const FLD_LES_STUDENT    = 'fldWZbAs9kMbjvxd6'; // Student (link)
-const FLD_LES_TEACHER    = 'fldlYzVOJxHk15xKb'; // Teacher
-const FLD_LES_STATUS     = 'fldEULlUDCGEkFkfc'; // Status
-const FLD_LES_TYPE       = 'fldchKXdibelRJv9U'; // Type of lesson
-
-// ── STATE ────────────────────────────────────────────────
-let currentStudentId = null;
-let currentStudentName = '';
-let currentStudents = [];
-
-// ── AIRTABLE HELPERS ─────────────────────────────────────
-async function atFetch(path, params = {}) {
-  const url = new URL(`https://api.airtable.com/v0/${AIRTABLE_BASE}/${path}`);
-  Object.entries(params).forEach(([k, v]) => {
-    if (k === 'sort' && Array.isArray(v)) {
+// ── API ──────────────────────────────────────────────────
+async function api(table, params = {}) {
+  const url = new URL(`https://api.airtable.com/v0/${BASE}/${table}`);
+  for (const [k, v] of Object.entries(params)) {
+    if (k === 'fields') {
+      v.forEach(f => url.searchParams.append('fields[]', f));
+    } else if (k === 'sort') {
       v.forEach((s, i) => {
         url.searchParams.set(`sort[${i}][field]`, s.field);
         url.searchParams.set(`sort[${i}][direction]`, s.direction || 'asc');
       });
-    } else if (k === 'fields' && Array.isArray(v)) {
-      v.forEach(f => url.searchParams.append('fields[]', f));
-    } else if (Array.isArray(v)) {
-      v.forEach(i => url.searchParams.append(k, i));
     } else {
       url.searchParams.set(k, v);
     }
-  });
-
-  const res = await fetch(url, {
-    headers: {
-      'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
-      'Content-Type': 'application/json'
-    }
-  });
-  if (!res.ok) throw new Error(`Airtable error ${res.status}`);
-  return res.json();
-}
-
-async function atAll(table, params = {}) {
-  let records = [], offset;
-  do {
-    const p = { ...params };
-    if (offset) p.offset = offset;
-    const data = await atFetch(table, p);
-    records = records.concat(data.records);
-    offset = data.offset;
-  } while (offset);
-  return records;
-}
-
-// ── LOGIN ─────────────────────────────────────────────────
-async function doLogin() {
-  if (!AIRTABLE_API_KEY) {
-    showError('⚙️ Необходимо добавить API-ключ Airtable в код приложения');
-    return;
   }
+  const r = await fetch(url, { headers: { Authorization: `Bearer ${TOKEN}` } });
+  if (!r.ok) {
+    const txt = await r.text();
+    throw new Error(`${r.status}: ${txt}`);
+  }
+  return r.json();
+}
 
+// ── LOGIN ────────────────────────────────────────────────
+async function doLogin() {
   const email = document.getElementById('emailInput').value.trim().toLowerCase();
-  if (!email) { showError('Please enter your email'); return; }
-
+  if (!email) { setErr('Please enter your email'); return; }
+  
   const btn = document.getElementById('loginBtn');
-  const btnText = document.getElementById('loginBtnText');
-  btn.disabled = true;
-  btnText.textContent = 'Searching...';
-  showError('');
+  btn.disabled = true; btn.textContent = 'Searching...';
+  setErr('');
 
   try {
-    const formula = encodeURIComponent(
-      `LOWER({${FLD_STUDENT_EMAIL}})="${email.replace(/"/g, '\\"')}"`
-    );
-    const data = await atFetch(TBL_STUDENTS, {
-      filterByFormula: decodeURIComponent(formula),
-      fields: [FLD_STUDENT_NAME, FLD_STUDENT_EMAIL, FLD_STUDENT_PARENT, 'Active Status'],
-      maxRecords: 5
+    // Search all students with this email
+    const formula = `LOWER({${F.S_EMAIL}})="${email.replace(/"/g,'\\"')}"`;
+    const data = await api(T_STUDENTS, {
+      filterByFormula: formula,
+      fields: [F.S_NAME, F.S_EMAIL, F.S_PARENT],
+      maxRecords: 10
     });
 
     if (!data.records || data.records.length === 0) {
-      showError('Email not found. Please check the spelling or contact the studio.');
+      setErr('Email not found. Please check spelling or contact the studio.');
       return;
     }
 
-    currentStudents = data.records; // all matched students
-    currentStudentId = data.records[0].id; // keep for backward compat
-    currentStudentName = data.records[0].fields[FLD_STUDENT_PARENT]
-      || data.records[0].fields[FLD_STUDENT_NAME]
-      || 'Parent';
+    students = data.records;
+    const parentName = data.records[0].fields[F.S_PARENT]
+                    || data.records[0].fields[F.S_NAME]
+                    || 'there';
+    const firstName = parentName.split(' ')[0];
 
-    enterDashboard();
-  } catch (e) {
+    document.getElementById('greetName').textContent = firstName;
+    document.getElementById('login').style.display = 'none';
+    document.getElementById('dash').style.display = 'block';
+    document.getElementById('logoutBtn').style.display = 'inline-block';
+
+    loadPackages();
+  } catch(e) {
     console.error(e);
-    showError('Connection error. Please try again later.');
+    setErr('Connection error. Please try again.');
   } finally {
-    btn.disabled = false;
-    btnText.textContent = 'Sign In';
+    btn.disabled = false; btn.textContent = 'Sign In';
   }
 }
 
-function showError(msg) {
-  document.getElementById('errorMsg').textContent = msg;
-}
-
-// ── DASHBOARD ────────────────────────────────────────────
-function enterDashboard() {
-  document.getElementById('login-screen').style.display = 'none';
-  document.getElementById('dashboard-screen').style.display = 'block';
-  document.getElementById('logoutBtn').style.display = 'inline-flex';
-
-  const firstName = currentStudentName.split(' ')[0];
-  document.getElementById('greetingName').innerHTML =
-    `Hi, <strong>${firstName}</strong>`;
-
-  loadPackages();
-}
-
+// ── PACKAGES ─────────────────────────────────────────────
 async function loadPackages() {
-  console.log("loadPackages called, students:", currentStudents.length, currentStudents.map(s=>s.id));
-  const grid = document.getElementById('packagesGrid');
-  grid.innerHTML = '<div class="spinner"></div><div class="loading-text">Loading data...</div>';
+  const wrap = document.getElementById('pkgsWrap');
+  wrap.innerHTML = '<div class="spinner"></div>';
+
+  const ids = students.map(s => s.id);
 
   try {
-    // Get all packages for this student
-    // First load active packages (filtered server-side)
-    const activeData = await atFetch(TBL_PACKAGES, {
-      filterByFormula: `{fldGmtvY2ES9yuwXH}=1`,
-      fields: [
-        FLD_PKG_STUDENT, FLD_PKG_LEFT, FLD_PKG_TOTAL, FLD_PKG_CURRENT,
-        FLD_PKG_ITEM, FLD_PKG_COMMENT, FLD_PKG_PAID,
-        FLD_PKG_USED, FLD_PKG_NUM
-      ],
-      sort: [{ field: FLD_PKG_NUM, direction: 'desc' }],
-      maxRecords: 100
-    });
-    // Also load a few recent past packages
-    const pastData = await atFetch(TBL_PACKAGES, {
-      filterByFormula: `{fldGmtvY2ES9yuwXH}=0`,
-      fields: [
-        FLD_PKG_STUDENT, FLD_PKG_LEFT, FLD_PKG_TOTAL, FLD_PKG_CURRENT,
-        FLD_PKG_ITEM, FLD_PKG_COMMENT, FLD_PKG_PAID,
-        FLD_PKG_USED, FLD_PKG_NUM
-      ],
-      sort: [{ field: FLD_PKG_NUM, direction: 'desc' }],
+    // Build OR formula for all student IDs
+    // Use FIND on the linked record field
+    const names = students.map(s => s.fields[F.S_NAME] || '').filter(Boolean);
+    const nameChecks = names.map(n => `{${F.P_STUDENT}} = "${n.replace(/"/g,'\\"')}"`).join(',');
+    const formula = names.length === 1
+      ? `{${F.P_STUDENT}} = "${names[0].replace(/"/g,'\\"')}"`
+      : `OR(${nameChecks})`;
+
+    const data = await api(T_PACKAGES, {
+      filterByFormula: formula,
+      fields: [F.P_STUDENT, F.P_LEFT, F.P_TOTAL, F.P_CURRENT, F.P_ITEM, F.P_COMMENT, F.P_USED, F.P_NUM],
+      sort: [{ field: F.P_NUM, direction: 'desc' }],
       maxRecords: 50
     });
-    const data = { records: [...(activeData.records||[]), ...(pastData.records||[])] };
 
-    const allIds = currentStudents.map(s => s.id);
-    const pkgs = (data.records || []).filter(r => {
-      const links = r.fields[FLD_PKG_STUDENT];
-      return Array.isArray(links) && links.some(id => allIds.includes(id));
-    });
+    const pkgs = data.records || [];
+    wrap.innerHTML = '';
 
     if (pkgs.length === 0) {
-      grid.innerHTML = `
-        <div class="empty-state">
-          <div class="empty-icon">📋</div>
-          <div class="empty-text">No packages found</div>
-        </div>`;
+      wrap.innerHTML = '<div class="empty">No packages found</div>';
       return;
     }
 
-    grid.innerHTML = '';
-
-    if (currentStudents.length > 1) {
-      // Multiple students — group by name
-      currentStudents.forEach(student => {
-        const sp = pkgs.filter(r => {
-          const links = r.fields[FLD_PKG_STUDENT];
-          return Array.isArray(links) && links.includes(student.id);
-        });
-        if (sp.length === 0) return;
+    if (students.length > 1) {
+      // Group by student
+      students.forEach(s => {
+        const sp = pkgs.filter(p => (p.fields[F.P_STUDENT] || []).includes(s.id));
+        if (!sp.length) return;
         const h = document.createElement('div');
-        h.style.cssText = 'font-family:"Cormorant Garamond",serif;font-size:22px;font-weight:600;color:var(--ink);margin:20px 0 10px';
-        h.textContent = student.fields[FLD_STUDENT_NAME] || 'Student';
-        grid.appendChild(h);
-        const active = sp.filter(p => p.fields[FLD_PKG_CURRENT]);
-        const past = sp.filter(p => !p.fields[FLD_PKG_CURRENT]);
-        [...active, ...past.slice(0,2)].forEach(pkg => grid.appendChild(renderPackageCard(pkg)));
+        h.className = 'student-header';
+        h.textContent = s.fields[F.S_NAME] || 'Student';
+        wrap.appendChild(h);
+        const active = sp.filter(p => p.fields[F.P_CURRENT]);
+        const past   = sp.filter(p => !p.fields[F.P_CURRENT]);
+        [...active, ...past.slice(0,2)].forEach(p => wrap.appendChild(pkgCard(p)));
       });
     } else {
-      const active = pkgs.filter(p => p.fields[FLD_PKG_CURRENT]);
-      const past = pkgs.filter(p => !p.fields[FLD_PKG_CURRENT]);
-      [...active, ...past.slice(0,3)].forEach(pkg => grid.appendChild(renderPackageCard(pkg)));
+      const active = pkgs.filter(p => p.fields[F.P_CURRENT]);
+      const past   = pkgs.filter(p => !p.fields[F.P_CURRENT]);
+      [...active, ...past.slice(0,3)].forEach(p => wrap.appendChild(pkgCard(p)));
     }
 
     loadLessons();
-  } catch (e) {
-    console.error('PACKAGE ERROR:', e, e.message, e.stack);
-    grid.innerHTML = `<div class="empty-state">
-      <div class="empty-icon">⚠️</div>
-      <div class="empty-text">Error: ${e.message}</div>
-    </div>`;
+  } catch(e) {
+    console.error('Package error:', e);
+    wrap.innerHTML = `<div class="empty">Error: ${esc(e.message)}</div>`;
   }
 }
 
-function renderPackageCard(pkg) {
+function pkgCard(pkg) {
   const f = pkg.fields;
-  const left  = parseInt(f[FLD_PKG_LEFT]) || 0;
-  const total = parseInt(f[FLD_PKG_TOTAL]) || 0;
-  const used  = parseInt(f[FLD_PKG_USED]) || 0;
-  const isCurrent = !!f[FLD_PKG_CURRENT];
+  const left  = parseFloat(f[F.P_LEFT]) || 0;
+  const total = parseFloat(f[F.P_TOTAL]) || 0;
+  const used  = parseFloat(f[F.P_USED]) || 0;
+  const cur   = !!f[F.P_CURRENT];
+  const low   = cur && left <= 2;
   const pct   = total > 0 ? Math.round((left / total) * 100) : 0;
-  const isLow = left <= 2 && isCurrent;
 
-  // Name: from Item lookup or Comment or Package №
-  const itemArr = f[FLD_PKG_ITEM];
-  const pkgName = (Array.isArray(itemArr) && itemArr[0])
-    ? itemArr[0]
-    : (f[FLD_PKG_COMMENT] || `Package #${f[FLD_PKG_NUM]}`);
+  const items = f[F.P_ITEM];
+  const name  = (Array.isArray(items) && items[0]) ? items[0]
+              : (f[F.P_COMMENT] || `Package #${f[F.P_NUM]}`);
 
-  const badge = isCurrent
-    ? (isLow ? '<span class="pkg-badge badge-low">Running low</span>'
-             : '<span class="pkg-badge badge-active">Active</span>')
-    : '<span class="pkg-badge badge-inactive">Completed</span>';
+  const badge = cur
+    ? (low ? '<span class="badge badge-low">Running low</span>'
+           : '<span class="badge badge-active">Active</span>')
+    : '<span class="badge badge-done">Completed</span>';
 
-  const card = document.createElement('div');
-  card.className = `pkg-card ${isCurrent ? 'active' : ''}`;
-  card.innerHTML = `
+  const div = document.createElement('div');
+  div.className = `pkg-card ${cur ? 'active' : ''}`;
+  div.innerHTML = `
     <div class="pkg-top">
-      <div class="pkg-name">${escHtml(pkgName)}</div>
+      <div class="pkg-name">${esc(name)}</div>
       ${badge}
     </div>
-
-    <div class="progress-section">
-      <div class="progress-numbers">
-        <div class="lessons-left-big">${left} <span>lessons left</span></div>
-        <div class="total-label">of ${total}</div>
-      </div>
-      <div class="progress-bar">
-        <div class="progress-fill ${isLow ? 'low' : ''}"
-             style="width:${pct}%"></div>
-      </div>
+    <div class="progress-row">
+      <div class="big-num">${left} <span>lessons left</span></div>
+      <div class="of-total">of ${total}</div>
     </div>
-
-    ${used > 0 ? `
-    <div class="pkg-meta">
-      <div class="meta-item">
-        <span class="meta-label">Done</span>
-        <span class="meta-value">${used} lessons</span>
-      </div>
-      <div class="meta-item">
-        <span class="meta-label">Total in package</span>
-        <span class="meta-value">${total} lessons</span>
-      </div>
+    <div class="bar"><div class="bar-fill ${low?'low':''}" style="width:${pct}%"></div></div>
+    ${used > 0 ? `<div class="meta-row">
+      <div class="meta-item"><div class="ml">Completed</div><div class="mv">${used} lessons</div></div>
+      <div class="meta-item"><div class="ml">Total</div><div class="mv">${total} lessons</div></div>
     </div>` : ''}
   `;
-  return card;
+  return div;
 }
 
+// ── LESSONS ──────────────────────────────────────────────
 async function loadLessons() {
-  const section = document.getElementById('lessonsSection');
+  const wrap = document.getElementById('lessonsWrap');
   const list = document.getElementById('lessonsList');
-  section.style.display = 'block';
+  wrap.style.display = 'block';
   list.innerHTML = '<div class="spinner"></div>';
 
+  const ids = students.map(s => s.id);
+
   try {
-    const data = await atFetch(TBL_LESSONS, {
-      fields: [FLD_LES_STUDENT, FLD_LES_DATE, FLD_LES_TEACHER, FLD_LES_STATUS, FLD_LES_TYPE],
-      sort: [{ field: FLD_LES_DATE, direction: 'desc' }],
-      maxRecords: 200
+    const names = students.map(s => s.fields[F.S_NAME] || '').filter(Boolean);
+    const nameChecks = names.map(n => `{${F.L_STUDENT}} = "${n.replace(/"/g,'\\"')}"`).join(',');
+    const formula = names.length === 1
+      ? `{${F.L_STUDENT}} = "${names[0].replace(/"/g,'\\"')}"`
+      : `OR(${nameChecks})`;
+
+    const data = await api(T_LESSONS, {
+      filterByFormula: formula,
+      fields: [F.L_DATE, F.L_TEACHER, F.L_STATUS, F.L_TYPE],
+      sort: [{ field: F.L_DATE, direction: 'desc' }],
+      maxRecords: 15
     });
 
-    const allStudentIds = currentStudents.map(s => s.id);
-    const lessons = (data.records || []).filter(r => {
-      const links = r.fields[FLD_LES_STUDENT];
-      return Array.isArray(links) && links.some(id => allStudentIds.includes(id));
-    }).slice(0, 15);
     list.innerHTML = '';
+    const lessons = data.records || [];
 
-    if (lessons.length === 0) {
-      list.innerHTML = '<div class="empty-state"><div class="empty-text" style="color:var(--muted)">Lesson History пуста</div></div>';
+    if (!lessons.length) {
+      list.innerHTML = '<div class="empty" style="padding:16px">No lessons yet</div>';
       return;
     }
 
-    lessons.forEach(les => list.appendChild(renderLessonRow(les)));
-  } catch (e) {
-    list.innerHTML = '';
-    section.style.display = 'none';
+    lessons.forEach(l => list.appendChild(lessonRow(l)));
+  } catch(e) {
+    wrap.style.display = 'none';
   }
 }
 
-function renderLessonRow(les) {
+function lessonRow(les) {
   const f = les.fields;
-  const dateStr = f[FLD_LES_DATE] || '';
-  const status  = (f[FLD_LES_STATUS] || '').toLowerCase();
-  const teacher = f[FLD_LES_TEACHER] || '';
-  const type    = f[FLD_LES_TYPE] || 'Индивидуальное';
+  const ds = f[F.L_DATE] || '';
+  const status = (f[F.L_STATUS] || '').toLowerCase();
+  const teacher = f[F.L_TEACHER] || '';
+  const type = f[F.L_TYPE] || 'Individual lesson';
 
-  const dateObj = dateStr ? new Date(dateStr + 'T12:00:00') : null;
-  const dateFormatted = dateObj
-    ? dateObj.toLocaleDateString('en-US', { day: 'numeric', month: 'short' })
-    : '—';
-  const weekday = dateObj
-    ? dateObj.toLocaleDateString('en-US', { weekday: 'short' })
-    : '';
+  const d = ds ? new Date(ds + 'T12:00:00') : null;
+  const dateStr = d ? d.toLocaleDateString('en-US', { day: 'numeric', month: 'short' }) : '—';
+  const wday = d ? d.toLocaleDateString('en-US', { weekday: 'short' }) : '';
 
-  // Status UI
-  let dotClass, chipClass, chipLabel;
-  if (status.includes('cancel') || status.includes('отмен')) {
-    dotClass = 'dot-cancel'; chipClass = 'chip-cancel'; chipLabel = 'Cancelled';
-  } else if (!dateStr || dateObj > new Date()) {
-    dotClass = 'dot-upcoming'; chipClass = 'chip-upcoming'; chipLabel = 'Upcoming';
+  let dotC, chipC, chipL;
+  if (status.includes('cancel')) {
+    dotC='dot-cancel'; chipC='chip-cancel'; chipL='Cancelled';
+  } else if (!d || d > new Date()) {
+    dotC='dot-upcoming'; chipC='chip-upcoming'; chipL='Upcoming';
   } else {
-    dotClass = 'dot-done'; chipClass = 'chip-done'; chipLabel = 'Done';
+    dotC='dot-done'; chipC='chip-done'; chipL='Done';
   }
 
   const row = document.createElement('div');
   row.className = 'lesson-row';
   row.innerHTML = `
-    <div class="lesson-date-col">
-      <div class="lesson-date">${dateFormatted}</div>
-      <div class="lesson-weekday">${weekday}</div>
-    </div>
-    <div class="lesson-dot ${dotClass}"></div>
-    <div class="lesson-info">
-      <div class="lesson-type">${escHtml(type)}</div>
-      ${teacher ? `<div class="lesson-teacher">${escHtml(teacher)}</div>` : ''}
-    </div>
-    <span class="lesson-status-chip ${chipClass}">${chipLabel}</span>
+    <div class="lesson-date"><div class="d">${dateStr}</div><div class="wd">${wday}</div></div>
+    <div class="dot ${dotC}"></div>
+    <div class="lesson-info"><div class="lt">${esc(type)}</div>${teacher?`<div class="tc">${esc(teacher)}</div>`:''}</div>
+    <span class="chip ${chipC}">${chipL}</span>
   `;
   return row;
 }
 
 // ── LOGOUT ───────────────────────────────────────────────
 function logout() {
-  currentStudentId = null;
-  currentStudentName = '';
-  currentStudents = [];
-  document.getElementById('dashboard-screen').style.display = 'none';
-  document.getElementById('login-screen').style.display = 'flex';
+  students = [];
+  document.getElementById('dash').style.display = 'none';
+  document.getElementById('login').style.display = 'flex';
   document.getElementById('logoutBtn').style.display = 'none';
   document.getElementById('emailInput').value = '';
-  document.getElementById('packagesGrid').innerHTML = '';
+  document.getElementById('pkgsWrap').innerHTML = '';
   document.getElementById('lessonsList').innerHTML = '';
-  document.getElementById('lessonsSection').style.display = 'none';
+  document.getElementById('lessonsWrap').style.display = 'none';
 }
 
-// ── UTILS ────────────────────────────────────────────────
-function escHtml(s) {
-  return String(s)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
-}
-
-// ── NO API KEY MODE (demo) ────────────────────────────────
-if (!AIRTABLE_API_KEY) {
-  // Show notice on load
-  window.addEventListener('DOMContentLoaded', () => {
-    const notice = document.createElement('div');
-    notice.style.cssText = `
-      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-      background: var(--ink); color: var(--cream); padding: 12px 22px;
-      border-radius: 10px; font-size: 13px; z-index: 100;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.2); max-width: 360px; text-align: center;
-    `;
-    notice.innerHTML = '⚙️ Add your <strong>Airtable API Token</strong> to the code — variable <code style="background:rgba(255,255,255,0.15);padding:2px 6px;border-radius:4px">AIRTABLE_API_KEY</code>';
-    document.body.appendChild(notice);
-    setTimeout(() => notice.style.opacity = '0', 6000);
-    notice.style.transition = 'opacity 0.5s';
-  });
+function setErr(msg) { document.getElementById('errMsg').textContent = msg; }
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 </script>
 </body>
