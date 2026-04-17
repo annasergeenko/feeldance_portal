@@ -262,7 +262,6 @@ async function loadPackages() {
     const data = await api(T_PACKAGES, {
       filterByFormula: formula,
       fields: [F.P_STUDENT, F.P_LEFT, F.P_TOTAL, F.P_CURRENT, F.P_ITEM, F.P_COMMENT, F.P_USED, F.P_NUM],
-      sort: [{ field: F.P_NUM, direction: 'desc' }],
       maxRecords: 50
     });
 
@@ -357,7 +356,6 @@ async function loadLessons() {
     const data = await api(T_LESSONS, {
       filterByFormula: formula,
       fields: [F.L_DATE, F.L_TEACHER, F.L_STATUS, F.L_TYPE],
-      sort: [{ field: F.L_DATE, direction: 'desc' }],
       maxRecords: 15
     });
 
