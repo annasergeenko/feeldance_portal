@@ -214,7 +214,7 @@ async function doLogin() {
     const formula = `LOWER({${F.S_EMAIL}})="${email.replace(/"/g,'\\"')}"`;
     const data = await api(T_STUDENTS, {
       filterByFormula: formula,
-      fields: [F.S_NAME, F.S_EMAIL, F.S_PARENT],
+      fields: ['Student', 'Email', 'Parent Name'],
       maxRecords: 10
     });
 
@@ -224,8 +224,8 @@ async function doLogin() {
     }
 
     students = data.records;
-    const parentName = data.records[0].fields[F.S_PARENT]
-                    || data.records[0].fields[F.S_NAME]
+    const parentName = data.records[0].fields['Parent Name']
+                    || data.records[0].fields['Student']
                     || 'there';
     const firstName = parentName.split(' ')[0];
 
@@ -253,7 +253,7 @@ async function loadPackages() {
   try {
     // Build OR formula for all student IDs
     // Use FIND on the linked record field
-    const names = students.map(s => s.fields[F.S_NAME] || '').filter(Boolean);
+    const names = students.map(s => s.fields['Student'] || s.fields[F.S_NAME] || '').filter(Boolean);
     const nameChecks = names.map(n => `{${F.P_STUDENT}} = "${n.replace(/"/g,'\\"')}"`).join(',');
     const formula = names.length === 1
       ? `{${F.P_STUDENT}} = "${names[0].replace(/"/g,'\\"')}"`
@@ -281,7 +281,7 @@ async function loadPackages() {
         if (!sp.length) return;
         const h = document.createElement('div');
         h.className = 'student-header';
-        h.textContent = s.fields[F.S_NAME] || 'Student';
+        h.textContent = s.fields['Student'] || s.fields[F.S_NAME] || 'Student';
         wrap.appendChild(h);
         const active = sp.filter(p => p.fields[F.P_CURRENT]);
         const past   = sp.filter(p => !p.fields[F.P_CURRENT]);
@@ -348,7 +348,7 @@ async function loadLessons() {
   const ids = students.map(s => s.id);
 
   try {
-    const names = students.map(s => s.fields[F.S_NAME] || '').filter(Boolean);
+    const names = students.map(s => s.fields['Student'] || s.fields[F.S_NAME] || '').filter(Boolean);
     const nameChecks = names.map(n => `{${F.L_STUDENT}} = "${n.replace(/"/g,'\\"')}"`).join(',');
     const formula = names.length === 1
       ? `{${F.L_STUDENT}} = "${names[0].replace(/"/g,'\\"')}"`
