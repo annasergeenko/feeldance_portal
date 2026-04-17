@@ -276,28 +276,91 @@ async function loadPackages() {
     }
 
     if (students.length > 1) {
-      names.forEach((sname, i) => {
+      names.forEach((sname) => {
         const sp = pkgs.filter(p => {
           const linked = p.fields['Student'];
           return Array.isArray(linked) ? linked.includes(sname) : linked === sname;
         });
-        if (!sp.length) return;
+        const active = sp.filter(p => p.fields['Current package']);
+        if (!active.length) return;
         const h = document.createElement('div');
         h.className = 'student-header';
         h.textContent = sname;
         wrap.appendChild(h);
-        const active = sp.filter(p => p.fields['Current package']);
-        const past   = sp.filter(p => !p.fields['Current package']);
-        [...active, ...past.slice(0,2)].forEach(p => wrap.appendChild(pkgCard(p)));
+        active.forEach(p => wrap.appendChild(pkgCard(p)));
       });
     } else {
       const active = pkgs.filter(p => p.fields['Current package']);
-      const past   = pkgs.filter(p => !p.fields['Current package']);
-      [...active, ...past.slice(0,3)].forEach(p => wrap.appendChild(pkgCard(p)));
+      active.forEach(p => wrap.appendChild(pkgCard(p)));
     }
+    // Load lesson dates after packages
+    loadLessonDates(names);
   } catch(e) {
     console.error('Package error:', e);
     wrap.innerHTML = `<div class="empty">Error: ${esc(e.message)}</div>`;
+  }
+}
+
+
+async function loadLessonDates(names) {
+  // Add lesson history section
+  const dash = document.getElementById('dash');
+  let section = document.getElementById('lessonDatesSection');
+  if (!section) {
+    section = document.createElement('div');
+    section.id = 'lessonDatesSection';
+    // Insert before contact block
+    const contact = dash.querySelector('.contact');
+    dash.insertBefore(section, contact);
+  }
+  section.innerHTML = '<div class="section-label" style="margin-top:32px">Recent Lessons</div><div class="spinner"></div>';
+
+  try {
+    const nameChecks = names.map(n => `{Student}="${n.replace(/"/g,'\"')}"`).join(',');
+    const formula = names.length === 1
+      ? `{Student}="${names[0].replace(/"/g,'\"')}"`
+      : `OR(${nameChecks})`;
+
+    const today = new Date().toISOString().split('T')[0];
+    const filterWithDate = `AND(${formula}, IS_BEFORE({Date of the lesson}, "${today}"), {Status}!="Cancelled")`;
+
+    const data = await api(T_LESSONS, {
+      filterByFormula: filterWithDate,
+      fields: ['Date of the lesson', 'Student (from Student)', 'Teacher', 'Status'],
+      maxRecords: 10
+    });
+
+    const lessons = data.records || [];
+    // Sort by date descending
+    lessons.sort((a,b) => (b.fields['Date of the lesson']||'').localeCompare(a.fields['Date of the lesson']||''));
+
+    if (!lessons.length) {
+      section.innerHTML = '';
+      return;
+    }
+
+    let html = '<div class="section-label" style="margin-top:32px">Recent Lessons</div>';
+    lessons.forEach(l => {
+      const ds = l.fields['Date of the lesson'] || '';
+      const d = ds ? new Date(ds + 'T12:00:00') : null;
+      const dateStr = d ? d.toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric' }) : '—';
+      const teacher = l.fields['Teacher'] || '';
+      const studentNames = l.fields['Student (from Student)'];
+      const sname = Array.isArray(studentNames) ? studentNames.join(', ') : (studentNames || '');
+      html += `<div class="lesson-row">
+        <div class="lesson-date"><div class="d">${dateStr}</div></div>
+        <div class="dot dot-done"></div>
+        <div class="lesson-info">
+          <div class="lt">${esc(sname)}</div>
+          ${teacher ? `<div class="tc">${esc(teacher)}</div>` : ''}
+        </div>
+        <span class="chip chip-done">Done</span>
+      </div>`;
+    });
+    section.innerHTML = html;
+  } catch(e) {
+    section.innerHTML = '';
+    console.error('Lessons error:', e);
   }
 }
 
@@ -320,11 +383,17 @@ function pkgCard(pkg) {
            : '<span class="badge badge-active">Active</span>')
     : '<span class="badge badge-done">Completed</span>';
 
+  const studentLinked = f['Student'];
+  const studentName = Array.isArray(studentLinked) ? studentLinked.join(', ') : (studentLinked || '');
+
   const div = document.createElement('div');
   div.className = `pkg-card ${cur ? 'active' : ''}`;
   div.innerHTML = `
     <div class="pkg-top">
-      <div class="pkg-name">${esc(name)}</div>
+      <div>
+        ${studentName ? `<div style="font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px">${esc(studentName)}</div>` : ''}
+        <div class="pkg-name">${esc(name)}</div>
+      </div>
       ${badge}
     </div>
     <div class="progress-row">
