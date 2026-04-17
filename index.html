@@ -129,10 +129,7 @@ input[type=email]:focus { border-color: var(--gold); }
     </div>
     <div class="section-label">Lesson Packages</div>
     <div id="pkgsWrap"></div>
-    <div id="lessonsWrap" style="display:none">
-      <div class="section-label" style="margin-top:32px">Lesson History</div>
-      <div id="lessonsList"></div>
-    </div>
+
     <div class="contact">
       <div>
         <div class="cl">Questions about your package?</div>
@@ -248,96 +245,63 @@ async function loadPackages() {
   const wrap = document.getElementById('pkgsWrap');
   wrap.innerHTML = '<div class="spinner"></div>';
 
-  const ids = students.map(s => s.id);
+  const names = students.map(s => s.fields['Student'] || '').filter(Boolean);
+  if (!names.length) {
+    wrap.innerHTML = '<div class="empty">No students found</div>';
+    return;
+  }
 
   try {
-    // Build OR formula for all student IDs
-    // Use FIND on the linked record field
-    const names = students.map(s => s.fields['Student'] || s.fields[F.S_NAME] || '').filter(Boolean);
-    const nameChecks = names.map(n => `{${F.P_STUDENT}} = "${n.replace(/"/g,'\\"')}"`).join(',');
+    const nameChecks = names.map(n => `{Student}="${n.replace(/"/g,'\"')}"`).join(',');
     const formula = names.length === 1
-      ? `{${F.P_STUDENT}} = "${names[0].replace(/"/g,'\\"')}"`
+      ? `{Student}="${names[0].replace(/"/g,'\"')}"`
       : `OR(${nameChecks})`;
+
+    console.log('formula:', formula);
 
     const data = await api(T_PACKAGES, {
       filterByFormula: formula,
-      fields: [F.P_STUDENT, F.P_LEFT, F.P_TOTAL, F.P_CURRENT, F.P_ITEM, F.P_COMMENT, F.P_USED, F.P_NUM],
+      fields: ['Student', 'Lessons left', 'Total lessons', 'Current package', 'Item (from Prices)', 'Comment', 'Lessons used', '№ Package'],
       maxRecords: 50
     });
+
+    console.log('packages found:', data.records?.length, data.error || '');
 
     const pkgs = data.records || [];
     wrap.innerHTML = '';
 
-    if (pkgs.length === 0) {
+    if (!pkgs.length) {
       wrap.innerHTML = '<div class="empty">No packages found</div>';
       return;
     }
 
     if (students.length > 1) {
-      // Group by student
-      students.forEach(s => {
-        const sp = pkgs.filter(p => (p.fields[F.P_STUDENT] || []).includes(s.id));
+      names.forEach((sname, i) => {
+        const sp = pkgs.filter(p => {
+          const linked = p.fields['Student'];
+          return Array.isArray(linked) ? linked.includes(sname) : linked === sname;
+        });
         if (!sp.length) return;
         const h = document.createElement('div');
         h.className = 'student-header';
-        h.textContent = s.fields['Student'] || s.fields[F.S_NAME] || 'Student';
+        h.textContent = sname;
         wrap.appendChild(h);
-        const active = sp.filter(p => p.fields[F.P_CURRENT]);
-        const past   = sp.filter(p => !p.fields[F.P_CURRENT]);
+        const active = sp.filter(p => p.fields['Current package']);
+        const past   = sp.filter(p => !p.fields['Current package']);
         [...active, ...past.slice(0,2)].forEach(p => wrap.appendChild(pkgCard(p)));
       });
     } else {
-      const active = pkgs.filter(p => p.fields[F.P_CURRENT]);
-      const past   = pkgs.filter(p => !p.fields[F.P_CURRENT]);
+      const active = pkgs.filter(p => p.fields['Current package']);
+      const past   = pkgs.filter(p => !p.fields['Current package']);
       [...active, ...past.slice(0,3)].forEach(p => wrap.appendChild(pkgCard(p)));
     }
-
-    loadLessons();
   } catch(e) {
     console.error('Package error:', e);
     wrap.innerHTML = `<div class="empty">Error: ${esc(e.message)}</div>`;
   }
 }
 
-function pkgCard(pkg) {
-  const f = pkg.fields;
-  const left  = parseFloat(f[F.P_LEFT]) || 0;
-  const total = parseFloat(f[F.P_TOTAL]) || 0;
-  const used  = parseFloat(f[F.P_USED]) || 0;
-  const cur   = !!f[F.P_CURRENT];
-  const low   = cur && left <= 2;
-  const pct   = total > 0 ? Math.round((left / total) * 100) : 0;
 
-  const items = f[F.P_ITEM];
-  const name  = (Array.isArray(items) && items[0]) ? items[0]
-              : (f[F.P_COMMENT] || `Package #${f[F.P_NUM]}`);
-
-  const badge = cur
-    ? (low ? '<span class="badge badge-low">Running low</span>'
-           : '<span class="badge badge-active">Active</span>')
-    : '<span class="badge badge-done">Completed</span>';
-
-  const div = document.createElement('div');
-  div.className = `pkg-card ${cur ? 'active' : ''}`;
-  div.innerHTML = `
-    <div class="pkg-top">
-      <div class="pkg-name">${esc(name)}</div>
-      ${badge}
-    </div>
-    <div class="progress-row">
-      <div class="big-num">${left} <span>lessons left</span></div>
-      <div class="of-total">of ${total}</div>
-    </div>
-    <div class="bar"><div class="bar-fill ${low?'low':''}" style="width:${pct}%"></div></div>
-    ${used > 0 ? `<div class="meta-row">
-      <div class="meta-item"><div class="ml">Completed</div><div class="mv">${used} lessons</div></div>
-      <div class="meta-item"><div class="ml">Total</div><div class="mv">${total} lessons</div></div>
-    </div>` : ''}
-  `;
-  return div;
-}
-
-// ── LESSONS ──────────────────────────────────────────────
 async function loadLessons() {
   const wrap = document.getElementById('lessonsWrap');
   const list = document.getElementById('lessonsList');
